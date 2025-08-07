@@ -1,4 +1,4 @@
-/* 🌍 Reset & Global */
+
 * {
   margin: 0;
   padding: 0;
@@ -16,7 +16,7 @@ body, html, #root {
   overflow: hidden;
 }
 
-/* 📜 Scrollbar Styling */
+/* 糖 Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -28,7 +28,7 @@ body, html, #root {
   background: transparent;
 }
 
-/* 💠 App Container */
+/* 帳 App Container */
 .app {
   display: flex;
   flex-direction: column;
@@ -36,7 +36,7 @@ body, html, #root {
   overflow: hidden;
 }
 
-/* 🔮 Glass Header */
+/* 醗 Glass Header */
 .glass-header {
   backdrop-filter: blur(12px);
   background: rgba(255, 255, 255, 0.07);
@@ -64,7 +64,7 @@ body, html, #root {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* 💬 Chat Section */
+/* 町 Chat Section */
 .chat-section {
   flex: 1;
   padding: 1rem;
@@ -74,7 +74,7 @@ body, html, #root {
   gap: 0.75rem;
 }
 
-/* 🧊 Message Bubbles */
+/* ｧMessage Bubbles */
 .message {
   max-width: 70%;
   padding: 0.8rem 1.2rem;
@@ -99,7 +99,7 @@ body, html, #root {
   color: #f3f4f6;
 }
 
-/* 🎯 Input Box */
+/* 識 Input Box */
 .input-box {
   display: flex;
   padding: 1rem;

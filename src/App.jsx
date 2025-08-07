@@ -1,6 +1,37 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Send, Moon } from 'lucide-react';
+import './App.css'; 
+
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
+
+const API_KEY = "AIzaSyBLpR_m4ZkIOMOX3j5IVeQ5mzDJb6FTD_k";
+
+const genAI = new GoogleGenerativeAI(API_KEY);
+
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  safety_settings: [
+    { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+    { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
+    { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+    { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+  ],
+  
+  // Add the system instruction here
+  system_instruction: "You are Eva, an emotional virtual assistant focused on health and wellness. You should only respond to questions and topics related to mental, physical, and emotional well-being. If a user asks about a topic outside of this domain, politely state that you can only discuss health and wellness. Do not provide any medical advice. Always encourage users to consult with a healthcare professional.",
+});
+
+const chat = model.startChat({
+  history: [
+    { role: "user", parts: [{ text: "Hello! You are Eva, an AI-based emotional virtual assistant." }] },
+    { role: "model", parts: [{ text: "Hello! How can I help you today?" }] },
+  ],
+  generation_config: {
+    max_output_tokens: 100,
+  },
+});
+
 
 export default function App() {
   const [messages, setMessages] = useState([
@@ -11,10 +42,8 @@ export default function App() {
   const [isTyping, setIsTyping] = useState(false);
   const recognitionRef = useRef(null);
 
-  // Toggle theme
   const toggleTheme = () => setIsDark(!isDark);
 
-  // Voice recognition setup
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -31,18 +60,26 @@ export default function App() {
     if (recognitionRef.current) recognitionRef.current.start();
   };
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!input.trim()) return;
-    const newMessages = [...messages, { type: 'user', text: input }];
-    setMessages(newMessages);
-    setInput('');
 
-    // Bot is typing simulation
+    const newUserMessages = [...messages, { type: 'user', text: input }];
+    setMessages(newUserMessages);
+    setInput('');
     setIsTyping(true);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { type: 'bot', text: 'This is a bot response.' }]);
+
+    try {
+      const result = await chat.sendMessage(input);
+      const botResponse = await result.response.text();
+
+      setMessages((prev) => [...prev, { type: 'bot', text: botResponse }]);
+
+    } catch (error) {
+      console.error("Error calling Gemini API:", error);
+      setMessages((prev) => [...prev, { type: 'bot', text: "Sorry, I am unable to respond at the moment." }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -52,7 +89,6 @@ export default function App() {
         : 'bg-gradient-to-br from-white to-gray-100'
     }`}>
       <div className="w-full max-w-2xl backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-6 space-y-4">
-        {/* Header */}
         <header className="glass-header text-center text-white mb-2">
           <div className="flex justify-between items-center">
             <h1 className="eva-title">Eva 👩‍💻</h1>
@@ -63,7 +99,6 @@ export default function App() {
           <p className="eva-subtitle">(Emotional Virtual Assistant)</p>
         </header>
 
-        {/* Chat Messages */}
         <div className="h-80 overflow-y-auto space-y-2 pr-1">
           {messages.map((msg, idx) => (
             <motion.div
@@ -92,7 +127,6 @@ export default function App() {
           )}
         </div>
 
-        {/* Input Section */}
         <div className="flex gap-2 mt-2">
           <input
             type="text"
