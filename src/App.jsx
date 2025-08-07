@@ -6,8 +6,11 @@ import './App.css';
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+<<<<<<< HEAD
 
 const genAI = new GoogleGenerativeAI(API_KEY);
+=======
+>>>>>>> 5b0f4c6599ba68a04e2d2a07799caa51a0df7df4
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
