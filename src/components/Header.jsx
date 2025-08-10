@@ -2,7 +2,7 @@ function Header({ isDark, toggleTheme, voiceOn, toggleVoice }) {
   return (
     <header className={`${isDark ? 'bg-[#202123] text-white' : 'bg-white text-black'} border-b border-gray-600 p-4 rounded-b-xl`}>
       <div className="flex justify-between items-center max-w-4xl mx-auto w-full">
-        <h1 className="text-lg font-semibold">Eva</h1>
+        <h1 className="text-lg font-semibold">Eva - Your emotional support</h1>
         <div className="flex gap-2">
           <button
             onClick={toggleVoice}
