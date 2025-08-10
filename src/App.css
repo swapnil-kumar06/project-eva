@@ -1,140 +1,68 @@
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body, html, #root {
-  height: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  overflow: hidden;
-}
-
-/* 糖 Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* 帳 App Container */
-.app {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* 醗 Glass Header */
+/* Header */
 .glass-header {
-  backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.07);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 2rem 1rem 1rem;
+  background: #202123;
+  padding: 1rem;
+  border-bottom: 1px solid #2A2B32;
+  color: #ECECF1;
+  font-weight: bold;
   text-align: center;
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border-radius: 0 0 30px 30px;
 }
 
 .eva-title {
-  font-size: 2.8rem;
-  font-weight: 900;
-  letter-spacing: 1px;
-  background: linear-gradient(to right, #a1c4fd, #c2e9fb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 1.3rem;
+  font-weight: 600;
 }
 
-.eva-subtitle {
-  font-size: 1.1rem;
-  font-weight: 400;
-  margin-top: 0.3rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* 町 Chat Section */
-.chat-section {
-  flex: 1;
-  padding: 1rem;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-/* ｧMessage Bubbles */
-.message {
-  max-width: 70%;
-  padding: 0.8rem 1.2rem;
-  border-radius: 20px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  word-wrap: break-word;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
-}
-
-.message.user {
-  align-self: flex-end;
-  background: linear-gradient(to right, #4f46e5, #6366f1);
-  color: white;
-}
-
-.message.bot {
-  align-self: flex-start;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  color: #f3f4f6;
-}
-
-/* 識 Input Box */
-.input-box {
-  display: flex;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-.input-box input {
-  flex: 1;
+/* Chat Messages */
+.message-user {
+  background: #343541;
+  border: 1px solid #565869;
+  color: #ECECF1;
   padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 30px;
-  outline: none;
-  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  max-width: 80%;
+  align-self: flex-end;
+}
+
+.message-bot {
+  background: #444654;
+  border: 1px solid #565869;
+  color: #ECECF1;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  max-width: 80%;
+  align-self: flex-start;
+}
+
+/* Buttons */
+.icon-btn, .send-btn, .mic-btn {
+  background: #10A37F;
   color: white;
-  font-size: 1rem;
-  transition: background 0.2s;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  transition: background 0.2s ease;
+}
+.icon-btn:hover, .send-btn:hover, .mic-btn:hover {
+  background: #0D8C6A;
 }
 
-.input-box input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+/* Typing Indicator */
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
 }
-
-.input-box button {
-  margin-left: 0.5rem;
-  padding: 0.75rem;
-  border: none;
+.typing-indicator span {
+  width: 6px;
+  height: 6px;
+  background: #10A37F;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  cursor: pointer;
-  transition: background 0.2s;
+  animation: blink 1.4s infinite both;
 }
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
-.input-box button:hover {
-  background: rgba(255, 255, 255, 0.3);
+@keyframes blink {
+  0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
 }

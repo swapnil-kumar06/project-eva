@@ -1,8 +1,11 @@
-function Footer() {
+function Footer({ isDark }) {
   return (
-    <footer className="text-center p-2 text-sm text-gray-500">
-      © 2025 Project Eva - Built with ❤️ by Team Swapnil
+    <footer
+      className={`${isDark ? 'bg-[#202123] text-gray-400' : 'bg-white text-gray-600'} border-t border-gray-600 text-center p-3 text-xs`}
+    >
+      © 2025 Project Eva — Built with ❤️ by Team Swapnil
     </footer>
   );
 }
+
 export default Footer;
