@@ -62,47 +62,78 @@ function App() {
     }
   };
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
+  // updateChatMessages now supports functional updates to avoid stale closures
+  const updateChatMessages = (updater) => {
+    setChats((prevChats) =>
+      prevChats.map((chat) =>
+        chat.id === activeChatId
+          ? {
+              ...chat,
+              messages:
+                typeof updater === "function" ? updater(chat.messages) : updater,
+            }
+          : chat
+      )
+    );
+  };
 
-    const newMessage = { sender: "user", text: input };
+  // ==== sendMessage now calls your backend API instead of calling Gemini in the browser ====
+  const sendMessage = async () => {
+    const text = input.trim();
+    if (!text) return;
 
-    // Auto-rename chat on first message
-    if (activeChat.messages.length === 0) {
-      setChats((prevChats) =>
-        prevChats.map((chat) =>
-          chat.id === activeChatId
-            ? {
-                ...chat,
-                title:
-                  input.slice(0, 20) + (input.length > 20 ? "..." : "")
-              }
-            : chat
-        )
-      );
-    }
+    const userMessage = { sender: "user", text };
 
-    updateChatMessages([...activeChat.messages, newMessage]);
+    // Auto-rename chat on first message (functional update)
+    setChats((prevChats) =>
+      prevChats.map((chat) =>
+        chat.id === activeChatId
+          ? {
+              ...chat,
+              title:
+                chat.messages.length === 0
+                  ? text.slice(0, 20) + (text.length > 20 ? "..." : "")
+                  : chat.title,
+            }
+          : chat
+      )
+    );
+
+    // Append user's message immediately
+    updateChatMessages((prev) => [...prev, userMessage]);
+
     setInput("");
     setIsTyping(true);
 
-    // Simulated bot response
-    setTimeout(() => {
-      updateChatMessages([
-        ...activeChat.messages,
-        newMessage,
-        { sender: "bot", text: "This is a bot response to: " + input }
-      ]);
-      setIsTyping(false);
-    }, 1000);
-  };
+    try {
+      // POST to your server endpoint which calls Gemini server-side
+      // If your server runs on another host/port change the URL accordingly.
+      const res = await fetch("http://localhost:3001/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: text,
+          // you could pass conversation history here if you want server side continuity
+        }),
+      });
 
-  const updateChatMessages = (newMessages) => {
-    setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === activeChatId ? { ...chat, messages: newMessages } : chat
-      )
-    );
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await res.json();
+      const botText = data.text || "Sorry, I didn't get a response.";
+
+      updateChatMessages((prev) => [...prev, { sender: "bot", text: botText }]);
+    } catch (error) {
+      console.error("Error contacting backend:", error);
+      updateChatMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: "Sorry, I am unable to respond at the moment." },
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const startNewChat = () => {
@@ -156,7 +187,7 @@ function App() {
       {/* Main Chat Area */}
       <div className="main-chat">
         <header className="glass-header">
-          <span className="eva-title">EVA AI</span>
+          <span className="eva-title">Project EVA</span>
         </header>
 
         <div className="messages-area">
